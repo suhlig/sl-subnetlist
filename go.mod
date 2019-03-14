@@ -1,4 +1,4 @@
-module github.com/suhlig/subnetlist
+module github.com/suhlig/sl-subnetlist
 
 go 1.12
 

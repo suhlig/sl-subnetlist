@@ -11,9 +11,7 @@ import (
 
 func main() {
 	sess := session.New()
-
-	account := services.GetAccountService(sess)
-	user, err := account.GetCurrentUser()
+	user, err := services.GetAccountService(sess).GetCurrentUser()
 
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
@@ -37,7 +35,12 @@ func main() {
 func printSubnet(sess *session.Session, vlanID int) {
 	service := services.GetNetworkVlanService(sess)
 	network := service.Id(vlanID)
-	subnets, _ := network.GetSubnets()
+	subnets, err := network.GetSubnets()
+
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error listing subnets of VLAN %d: %s\n", vlanID, err)
+		return
+	}
 
 	for _, subnet := range subnets {
 		fmt.Printf("%s/%d\n", *subnet.NetworkIdentifier, *subnet.Cidr)

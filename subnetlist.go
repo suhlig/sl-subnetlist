@@ -32,8 +32,6 @@ func main() {
 
 		printSubnet(sess, vlanID)
 	}
-
-	printBlacklisted(sess, account)
 }
 
 func printSubnet(sess *session.Session, vlanID int) {
@@ -53,27 +51,4 @@ func contains(s []string, e int) bool {
 		}
 	}
 	return false
-}
-
-func printBlacklisted(sess *session.Session, account services.Account) {
-	vlans, err := account.GetAvailablePublicNetworkVlans()
-
-	if err != nil {
-		fmt.Fprintln(os.Stderr, err)
-		return
-	}
-
-	fmt.Fprintf(os.Stderr, "Found %d public VLANs:\n", len(vlans))
-
-	for _, vlan := range vlans {
-		if nil == vlan.Name {
-			fmt.Printf("%d\n", *vlan.Id)
-		} else {
-			fmt.Printf("%d %s\n", *vlan.Id, *vlan.Name)
-		}
-
-		if !contains(os.Args[1:], *vlan.Id) {
-			printSubnet(sess, *vlan.Id)
-		}
-	}
 }
